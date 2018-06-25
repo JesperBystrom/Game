@@ -1,0 +1,261 @@
+fileFormatVersion: 2
+guid: 395c0559941dacb48ae97ed2a565aa7d
+timeCreated: 1529173768
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Arm.L
+    100002: Arm.R
+    100004: Armature
+    100006: Body
+    100008: Bone
+    100010: Bone.001
+    100012: Bone.001_end
+    100014: //RootNode
+    100016: Cube
+    100018: Eye.L
+    100020: Eye.L_end
+    100022: Eye.R
+    100024: Eye.R_end
+    100026: Foot.L
+    100028: Foot.R
+    100030: Hand.L
+    100032: Hand.L_end
+    100034: Hand.R
+    100036: Head
+    100038: Leg.L
+    100040: Leg.R
+    100042: Mouth
+    100044: Mouth_end
+    100046: Shoulder.L
+    100048: Shoulder.R
+    100050: Sphere
+    100052: Sphere.001
+    100054: Sphere.002
+    100056: Sphere.003
+    100058: Sphere.004
+    100060: Sphere.005
+    100062: Toes.L
+    100064: Toes.L_end
+    100066: Toes.R
+    100068: Toes.R_end
+    400000: Arm.L
+    400002: Arm.R
+    400004: Armature
+    400006: Body
+    400008: Bone
+    400010: Bone.001
+    400012: Bone.001_end
+    400014: //RootNode
+    400016: Cube
+    400018: Eye.L
+    400020: Eye.L_end
+    400022: Eye.R
+    400024: Eye.R_end
+    400026: Foot.L
+    400028: Foot.R
+    400030: Hand.L
+    400032: Hand.L_end
+    400034: Hand.R
+    400036: Head
+    400038: Leg.L
+    400040: Leg.R
+    400042: Mouth
+    400044: Mouth_end
+    400046: Shoulder.L
+    400048: Shoulder.R
+    400050: Sphere
+    400052: Sphere.001
+    400054: Sphere.002
+    400056: Sphere.003
+    400058: Sphere.004
+    400060: Sphere.005
+    400062: Toes.L
+    400064: Toes.L_end
+    400066: Toes.R
+    400068: Toes.R_end
+    4300000: Sphere.002
+    4300002: Sphere.001
+    4300004: Sphere.003
+    4300006: Sphere
+    4300008: Cube
+    4300010: Sphere.004
+    4300012: Sphere.005
+    7400000: Armature|Idle
+    9500000: //RootNode
+    13700000: Cube
+    13700002: Sphere
+    13700004: Sphere.001
+    13700006: Sphere.002
+    13700008: Sphere.003
+    13700010: Sphere.004
+    13700012: Sphere.005
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Armature|Idle
+      takeName: Armature|Idle
+      firstFrame: 0
+      lastFrame: 34
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Body
+        weight: 1
+      - path: Armature/Body/Head
+        weight: 1
+      - path: Armature/Body/Head/Eye.L
+        weight: 1
+      - path: Armature/Body/Head/Eye.L/Eye.L_end
+        weight: 1
+      - path: Armature/Body/Head/Eye.R
+        weight: 1
+      - path: Armature/Body/Head/Eye.R/Eye.R_end
+        weight: 1
+      - path: Armature/Body/Head/Mouth
+        weight: 1
+      - path: Armature/Body/Head/Mouth/Mouth_end
+        weight: 1
+      - path: Armature/Leg.L
+        weight: 1
+      - path: Armature/Leg.L/Foot.L
+        weight: 1
+      - path: Armature/Leg.L/Foot.L/Toes.L
+        weight: 1
+      - path: Armature/Leg.L/Foot.L/Toes.L/Toes.L_end
+        weight: 1
+      - path: Armature/Leg.R
+        weight: 1
+      - path: Armature/Leg.R/Foot.R
+        weight: 1
+      - path: Armature/Leg.R/Foot.R/Toes.R
+        weight: 1
+      - path: Armature/Leg.R/Foot.R/Toes.R/Toes.R_end
+        weight: 1
+      - path: Armature/Shoulder.L
+        weight: 1
+      - path: Armature/Shoulder.L/Arm.L
+        weight: 1
+      - path: Armature/Shoulder.L/Arm.L/Hand.L
+        weight: 1
+      - path: Armature/Shoulder.L/Arm.L/Hand.L/Hand.L_end
+        weight: 1
+      - path: Armature/Shoulder.R
+        weight: 1
+      - path: Armature/Shoulder.R/Arm.R
+        weight: 1
+      - path: Armature/Shoulder.R/Arm.R/Hand.R
+        weight: 1
+      - path: Armature/Shoulder.R/Arm.R/Hand.R/Bone
+        weight: 1
+      - path: Armature/Shoulder.R/Arm.R/Hand.R/Bone/Bone.001
+        weight: 1
+      - path: Armature/Shoulder.R/Arm.R/Hand.R/Bone/Bone.001/Bone.001_end
+        weight: 1
+      - path: Cube
+        weight: 1
+      - path: Sphere.002
+        weight: 1
+      - path: Sphere.002/Sphere
+        weight: 1
+      - path: Sphere.002/Sphere.001
+        weight: 1
+      - path: Sphere.002/Sphere.003
+        weight: 1
+      - path: Sphere.004
+        weight: 1
+      - path: Sphere.005
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
