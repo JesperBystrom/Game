@@ -14,12 +14,17 @@ public class Player : MonoBehaviour {
 	private List<Unit> unitQueue = new List<Unit>();
 	private int currentUnit;
 	private Ability ability;
+	private int goldEarnedThisRound = 0;
+
+
+	public Economics economics = new Economics();
 
 	void Start () {
 		GoldTextSingleton.instance.text.text = gold.ToString();
 	}
 
 	public virtual void startTurn(){
+		goldEarnedThisRound = 0;
 		myTurn = true;
 		//Camera.main.GetComponent<CameraPan>().panTowards(baseStructure.gameObject);
 		updateGoldText(gold);
@@ -54,7 +59,9 @@ public class Player : MonoBehaviour {
 				}
 			}
 		}
+		Map.instance.updateMapDensity(this);
 		giveGold(capturedTerritories.Count);
+		economics.onRoundEnd(this);
 	}
 
 	protected virtual void Update () {
@@ -112,6 +119,7 @@ public class Player : MonoBehaviour {
 	public void giveGold(int amount){
 		gold += amount;
 		updateGoldText(gold);
+		goldEarnedThisRound += amount;
 	}
 
 	public void removeGold(int amount){
@@ -145,5 +153,17 @@ public class Player : MonoBehaviour {
 		});
 
 		return strength / 10;
+	}
+
+	public int getAmountOfPlayersStrongerThanMe(int handicap = 2){
+		int num = 0;
+		foreach(Player p in Game.instance.players){
+			if(p == this) continue;
+
+			if(getStrength() > (p.getStrength()*handicap)){
+				num++;
+			}
+		}
+		return num;
 	}
 }

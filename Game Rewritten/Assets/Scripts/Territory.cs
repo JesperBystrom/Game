@@ -7,6 +7,7 @@ public class Territory : MonoBehaviour {
 	private Entity entity;
 	private int markType = MarkType.NONE;
 	private Player player;
+	private float density;
 
 	void Start(){
 		renderer = transform.GetChild(0).GetComponent<Renderer>();
@@ -43,6 +44,11 @@ public class Territory : MonoBehaviour {
 		territories.Add(m.findTerritory(x,z-range));
 		territories.Add(m.findTerritory(x,z+range));
 		territories.Add(m.findTerritory(x-range,z-range));
+
+		/*foreach(Territory t in territories){
+			if(t == null) territories.Remove(t);
+		}*/
+
 		return territories;
 	}
 
@@ -69,7 +75,7 @@ public class Territory : MonoBehaviour {
 
 	public static float distance(Territory t1, Territory t2){
 		if(t1 == null || t2 == null) return -1;
-		return Vector3.Distance(t1.transform.position, t2.transform.position);
+		return (int)Vector3.Distance(t1.transform.position, t2.transform.position);
 	}
 
 	public void put(Entity e, Player player){
@@ -147,6 +153,33 @@ public class Territory : MonoBehaviour {
 
 	public void removeEntity(){
 		entity = null;
+	}
+
+	public void setDensity(float density, bool applyToNeighbours = true){
+		this.density = density;
+
+		if(!applyToNeighbours) return;
+
+		List<Territory> neighbours = getNeighbours(1);
+		foreach(Territory t in neighbours){
+			if(t == null) continue;
+			Debug.Log(Territory.distance(this, t));
+			t.setDensity(density / Territory.distance(this, t), false);
+		}
+	}
+
+	public float getDensity(){
+		return density;
+	}
+
+	void Update(){
+		/*if(density > 0){
+			Debug.Log(density);
+			//Debug.Log(Color.HSVToRGB(0, 1, 1));
+			float colorDensity = MathUtility.remapValue(density, 0, 1, 0, 0.5f);
+			Debug.Log("DENSITY: " + colorDensity + ", " + density);
+			changeColor(Color.HSVToRGB(colorDensity, 1, 1));
+		}*/
 	}
 }
 

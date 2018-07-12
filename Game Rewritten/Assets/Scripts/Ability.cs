@@ -262,4 +262,20 @@ public class Ability : MonoBehaviour {
 	public float getRange(){
 		return range * uses;
 	}
+
+	public static bool isMoveAbility(Ability ability){
+		return ability.abilityType == AbilityType.MOVE;
+	}
+
+	public static bool isSpellAbility(Ability ability){
+		return ability.abilityType == AbilityType.PARTICLE;
+	}
+
+	public static bool isMeeleAbility(Ability ability){
+		return ability.abilityType == AbilityType.ATTACK;
+	}
+
+	public static bool isDamageAbility(Ability ability){
+		return ability.abilityType == AbilityType.ATTACK || ability.abilityType == AbilityType.PARTICLE;
+	}
 }

@@ -9,6 +9,7 @@ public class Unit : Entity {
 	public Ability[] abilities;
 	public GameObject abilityUIPrefab;
 	public bool castSpellAtEndOfTurn;
+	public delegate bool filterAbilities(Ability ability);
 
 	private Ability preparedAbility;
 	private AbilityHandler activeAbilityHandler;
@@ -205,6 +206,15 @@ public class Unit : Entity {
 		foreach(Ability a in abilities){
 			if(a.abilityType == type && a.uses > 0)
 				return a;
+		}
+		return null;
+	}
+		
+	public Ability getAbility(filterAbilities filter){
+		foreach(Ability a in abilities){
+			if(filter(a)){
+				return a;
+			}
 		}
 		return null;
 	}

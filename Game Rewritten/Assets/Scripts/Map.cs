@@ -52,4 +52,15 @@ public class Map : MonoBehaviour {
 		}
 	}
 
+	public float getMaxDistance(){
+		return Vector3.Distance(territories[0].transform.position, territories[territories.Length-1].transform.position);
+	}
+
+	public void updateMapDensity(Player player){
+		foreach(Territory t in territories){
+			if(t.getPlayer() == player){
+				t.setDensity(1);
+			}
+		}
+	}
 }

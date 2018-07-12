@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum Strategy {
-	NEUTRAL, HIT_AND_RUN, DEFEND, ATTACK
+	NEUTRAL, HIT_AND_RUN, DEFEND, OFFENSIVE
 }
 
 
@@ -16,52 +16,50 @@ public class AIPriority {
 		this.ai = ai;
 	}
 
-	public Territory getMostExpandableTerritory(Territory territory){
+	public Territory getMostExpandableTerritory(Territory territory, Ability ability){
 
 		Territory mostLikely = null;
 		float highestValue = 0;
 
+		List<Territory> avaibleTerritores = new List<Territory>();
+
 		foreach(Territory t in Map.instance.territories){
+			if(t == null || t == territory) continue;
+			avaibleTerritores.Add(t);
+		}
 
-			float dist = Territory.distance(territory, t);
 
-			if(dist > 3) continue;
+		foreach(Territory t in avaibleTerritores){
 
+			float originalDist = Vector3.Distance(t.transform.position, territory.transform.position);
+			float dist = Mathf.Abs(originalDist - Map.instance.getMaxDistance());
 			float value = 0;
 
+			if(ability.getRange() - originalDist <= 0.5f){
+				value += 4;
+			}
+
+			value += t.getDensity() * 0.01f;
 			value += dist;
 
-
 			if(t.getPlayer() == null){
-				value += 2;
-				List<Territory> neighbours = t.getNeighbours(4);
+				value += 3;
+				/*List<Territory> neighbours = t.getNeighbours(4);
 				foreach(Territory n in neighbours){
 					if(n == null) continue;
 
 					if(n.getPlayer() == null) {
 						value += 1;
-						Debug.Log(value);
 					}
-				}
+				}*/
 			}
 
 			if(t.getPlayer() == ai){
-				value--;
+				value++;
+			}
 
-				List<Territory> neighbours = t.getNeighbours(4);
-				foreach(Territory n in neighbours){
-					if(n == null) continue;
-
-					if(n.getPlayer() == ai) {
-						value--;
-						value += 6 * ai.getStrength();
-					}
-				}
-
-			} else {
-				if(t.getPlayer() != null){
-					value += 0.5f;
-				}
+			if(t.getPlayer() != null){
+				value += 0.5f;
 			}
 
 			foreach(Player p in Game.instance.getPlayers()){
@@ -95,6 +93,7 @@ public class AIAction {
 	}*/
 
 	public void castAbility(Unit unit, Ability ability, Territory towards){
+		ai.unitInUse = unit;
 		ai.StartCoroutine(castAbilityCoroutine(1, unit, ability, towards));
 	}
 
@@ -115,7 +114,7 @@ public class AIAction {
 					if(t.getEntity().GetType() == typeof(Unit))
 						u = (Unit)t.getEntity();
 
-					if(u == null) continue;
+					if(u == null || u == unit) continue;
 
 					if(Vector3.Distance(unit.getTerritory().transform.position, t.transform.position) <= ability.patternRange+0.5f){
 						return t;
@@ -139,6 +138,8 @@ public class AI : Player {
 	public delegate void performAction();
 	public performAction actionDelegate;
 
+	public Unit unitInUse;
+
 	private Strategy strategy = Strategy.NEUTRAL;
 	private AIAction action;
 	private AIPriority priority;
@@ -147,7 +148,6 @@ public class AI : Player {
 		unitShop = GameObject.Find("UnitShop").GetComponent<ShopManager>();
 		action = new AIAction(this);
 		priority = new AIPriority(this);
-
 	}
 
 	public override void startTurn(){
@@ -155,56 +155,68 @@ public class AI : Player {
 	}
 
 	private IEnumerator turnOrder(){
-		Entity e = startOfTurn();
+		List<Entity> avaibleEntities = startOfTurn();
 		yield return new WaitForSeconds(1);
-		while(!duringTurn(e)) {
+		while(!duringTurn(avaibleEntities)) {
 			yield return new WaitForSeconds(1.5f);
 		}
 		yield return new WaitForSeconds(1);
 		endOfTurn();
 	}
 
-	private Entity startOfTurn(){
+	private List<Entity> startOfTurn(){
 		List<Entity> avaibleEntities = new List<Entity>();
 
 		strategy = Strategy.NEUTRAL;
 
-		foreach(Entity e in avaibleEntities){
-			if(e.GetType() != typeof(Unit)) continue;
+		Debug.Log("Stronger: " + MathUtility.percentage(getAmountOfPlayersStrongerThanMe(), Game.instance.players.Length));
 
-			if(Territory.distance(getNearestEnemyTerritory(e.getTerritory(), true), e.getTerritory()) < 5){
+		if(MathUtility.percentage(getAmountOfPlayersStrongerThanMe(), Game.instance.players.Length) > 0.5f){
+			strategy = Strategy.OFFENSIVE;
+		}
+
+		foreach(Territory t in capturedTerritories){
+			if(t.getEntity() == null) continue;
+			avaibleEntities.Add(t.getEntity());
+		}
+
+		foreach(Entity e in avaibleEntities){
+			if(Territory.distance(getNearestEnemyTerritory(e.getTerritory(), true), e.getTerritory()) <= 5){
 				strategy = Strategy.HIT_AND_RUN;
 			}
 		}
 
-		return unitShop.purchaseItemAI(unitShop.getItem(Item.CHICKEN_ASSASIN), getSafestTerritory(capturedTerritories.ToArray(), true));
+		Item optimalPurchase = AIBuyStrategy.getMostOptimalPurchase(this, strategy, unitShop);
+		Entity purchased = unitShop.purchaseItem(unitShop.getItem(optimalPurchase));
+
+		if(purchased != null) {
+			getSafestTerritory(capturedTerritories.ToArray(), true).put(purchased, this);
+			avaibleEntities.Add(purchased);
+		}
+
+		return avaibleEntities;
 	}
 
-	private bool duringTurn(Entity purchasedEntity){
+	private bool duringTurn(List<Entity> avaibleEntities){
 
-		/*List<Unit> avaibleUnits = new List<Unit>();
-		List<Structure> avaibleStructures = new List<Structure>();
-
-		foreach(Territory t in capturedTerritories){
-			Entity e = t.getEntity();
-			if(e == null) {
-				e = purchasedEntity;
-				if(e == null) continue;
-			}
-			if(e.GetType() == typeof(Unit)) avaibleUnits.Add((Unit)e);
-			if(e.GetType() == typeof(Structure)) avaibleStructures.Add((Structure)e);
-		}*/
-
+		//if(unitInUse != null) return false; 
 
 		Ability abilityToUse = null;
+
+		Debug.Log(strategy);
 
 		switch(strategy){
 
 		case Strategy.HIT_AND_RUN:
-			
-			foreach(Unit u in avaibleUnits){
-				
+
+			foreach(Entity e in avaibleEntities){
+
+				if(e == null || e.GetType() != typeof(Unit)) continue;
+
+				Unit u = (Unit)e;
+
 				foreach(Ability a in u.abilities){
+					if(a.uses <= 0) continue;
 
 					Territory target = getNearestEnemyTerritory(u.getTerritory(), false);
 
@@ -212,28 +224,25 @@ public class AI : Player {
 
 						float dist = Territory.distance(u.getTerritory(), target);
 
-						if(dist < 5){
-							if(dist <= 1.5f){
+						if(dist <= a.getRange()){
+							//Attack if in range
+							if(a.abilityType == AbilityType.ATTACK || a.abilityType == AbilityType.PARTICLE){
 
-								//Attack if in range
-								if(a.abilityType == AbilityType.ATTACK || a.abilityType == AbilityType.PARTICLE){
-									
-									Territory t = action.canAttack(u, a);
-									if(t != null){
-										action.castAbility(u,a,t);
-										return false;
-									}
+								Territory t = action.canAttack(u, a);
+								if(t != null){
+									action.castAbility(u,a,t);
+									strategy = Strategy.NEUTRAL;
+									return false;
 								}
+							}
+						}
 
-							} else {
-								// Move towards enemy if too far away
-								if(a.abilityType == AbilityType.MOVE){
-									Territory t = getNearestEnemyTerritory(u.getTerritory(), true);
-									if(t != null){
-										action.castAbility(u,a,t.getNearestNeighbourFrom(u.getTerritory(), false));
-										return false;
-									}
-								}
+						// Move towards enemy if too far away
+						if(a.abilityType == AbilityType.MOVE){
+							Territory t = getNearestEnemyTerritory(u.getTerritory(), true);
+							if(t != null){
+								action.castAbility(u,a,t.getNearestNeighbourFrom(u.getTerritory(), false));
+								return false;
 							}
 						}
 					}
@@ -243,14 +252,19 @@ public class AI : Player {
 			break;
 			
 		case Strategy.NEUTRAL: //Try to get as many territories as possible
+		case Strategy.OFFENSIVE:
+			
+			foreach(Entity e in avaibleEntities){
 
-			foreach(Unit u in avaibleUnits){
+				if(e == null || e.GetType() != typeof(Unit)) continue;
+
+				Unit u = (Unit)e;
 
 				abilityToUse = u.getAbility(AbilityType.MOVE);
 
 				if(abilityToUse == null) continue;
 
-				Territory t = priority.getMostExpandableTerritory(u.getTerritory());
+				Territory t = priority.getMostExpandableTerritory(u.getTerritory(), abilityToUse);
 
 				if(t != null){
 					action.castAbility(u, abilityToUse, t);
